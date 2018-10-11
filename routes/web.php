@@ -11,6 +11,9 @@
 |
 */
 
-$router->get('/', function () use ($router) {
-    return $router->app->version();
+$router->get('/trainers', function () use ($router) {
+    return [
+        ["name" => "John Edisson Rodriguez", "profession" => "Personal Trainer", "image" => "john-rodriguez.jpg"],
+        ["name" => "Mayra Liliana Sanabria", "profession" => "Personal Trainer", "image" => "lili.png"]
+    ];
 });
