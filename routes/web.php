@@ -17,3 +17,10 @@ $router->get('/trainers', function () use ($router) {
         ["name" => "Mayra Liliana Sanabria", "profession" => "Personal Trainer", "image" => "lili.png"]
     ];
 });
+
+$router->get('/professions', function () use ($router) {
+    return [
+        ["name" => "Personal Trainer", "Description" => "PT"],
+        ["name" => "Coach", "Description" => "C"]
+    ];
+});
