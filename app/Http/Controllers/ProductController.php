@@ -3,11 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
-use App\Trainer;
+use App\Product;
 
-class TrainerController extends Controller
+class ProductController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,7 +15,7 @@ class TrainerController extends Controller
      */
     public function index()
     {
-        return Trainer::all();
+        return Product::all();
     }
 
     /**
@@ -28,17 +27,10 @@ class TrainerController extends Controller
     public function store(Request $request)
     {
         $data = $request->all();
-        $image = $request->get('image');
-        $image = str_replace('data:image/png;base64,', '', $image);
-        $trainer = Trainer::create($data);
-
-        //Flysystem::put('image.png', base64_decode($image));
-
-        Storage::put('image.png', base64_decode($image));
-
+        $profession = Product::create($data);
         return response()->json([
-            'trainer' => $trainer,
-            'url' => "/trainers/{$trainer->id}"
+            'product' => $product,
+            'url' => "/products/{$product->id}"
         ], 201);
     }
 
@@ -50,8 +42,8 @@ class TrainerController extends Controller
      */
     public function show($id)
     {
-        $trainer = Trainer::findOrFail($id);
-        return $trainer;
+        $product = Product::findOrFail($id);
+        return $product;
     }
 
     /**
@@ -64,15 +56,9 @@ class TrainerController extends Controller
     public function update(Request $request, $id)
     {
         $data = $request->all();
-        $trainer = Trainer::findOrFail($id);
-        $trainer->update($data);
-
-        return response()->json($trainer, 200);
-    }
-
-    public function uploadImage(Request $request) 
-    {
-        dump($request);
+        $product = Product::findOrFail($id);
+        $product->update($data);
+        return $product;
     }
 
     /**
@@ -83,11 +69,11 @@ class TrainerController extends Controller
      */
     public function destroy($id)
     {
-        $trainer = Auditor::findOrFail($id);
-        $trainer->delete();
+        $product = Product::findOrFail($id);
+        $product->delete();
         return response()->json([
             'message' => 'Deleted successfully',
-            'url' => '/api/trainers'
+            'url' => '/products'
         ], 200);
     }
 }

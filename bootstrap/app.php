@@ -27,6 +27,11 @@ $app->withFacades();
 
 $app->withEloquent();
 
+// For storage
+$app->configure('filesystems');
+
+class_alias('Illuminate\Support\Facades\Storage', 'Storage');
+
 /*
 |--------------------------------------------------------------------------
 | Register Container Bindings
@@ -101,5 +106,8 @@ $app->router->group([
 
 // Register lumen-generator
 $app->register(Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
+
+// For storage
+$app->register(Illuminate\Filesystem\FilesystemServiceProvider::class);
 
 return $app;

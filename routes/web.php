@@ -22,3 +22,9 @@ $router->get('/professions/{id}', 'ProfessionController@show');
 $router->post('/professions', 'ProfessionController@store');
 $router->put('/professions/{id}', 'ProfessionController@update');
 $router->delete('/professions/{id}', 'ProfessionController@destroy');
+
+$router->get('/products', 'ProductController@index');
+$router->get('/products/{id}', 'ProductController@show');
+$router->post('/products', 'ProductController@store');
+$router->put('/products/{id}', 'ProductController@update');
+$router->delete('/products/{id}', 'ProductController@destroy');
