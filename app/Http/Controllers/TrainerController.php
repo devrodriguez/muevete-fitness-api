@@ -27,14 +27,17 @@ class TrainerController extends Controller
      */
     public function store(Request $request)
     {
+        $imageName = 'image.png';
+        $imageUrl = '';
         $data = $request->all();
         $image = $request->get('image');
         $image = str_replace('data:image/png;base64,', '', $image);
+
+        Storage::disk('public_storage')->put($imageName, base64_decode($image));
+        $imageUrl = Storage::disk('public_storage')->url($imageName);
+
+        $data['image_url'] = $imageUrl;
         $trainer = Trainer::create($data);
-
-        //Flysystem::put('image.png', base64_decode($image));
-
-        Storage::put('image.png', base64_decode($image));
 
         return response()->json([
             'trainer' => $trainer,

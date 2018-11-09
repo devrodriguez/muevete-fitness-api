@@ -25,12 +25,13 @@ $app = new Laravel\Lumen\Application(
 
 $app->withFacades();
 
+//class_alias('Illuminate\Support\Facades\Storage', 'Storage');
+
 $app->withEloquent();
 
 // For storage
 $app->configure('filesystems');
 
-class_alias('Illuminate\Support\Facades\Storage', 'Storage');
 
 /*
 |--------------------------------------------------------------------------
@@ -83,6 +84,15 @@ $app->middleware([
 |
 */
 
+// Register lumen-generator
+$app->register(Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
+
+// For storage
+$app->register(Illuminate\Filesystem\FilesystemServiceProvider::class);
+
+// Additional helper
+$app->register(Irazasyed\Larasupport\Providers\ArtisanServiceProvider::class);
+
 // $app->register(App\Providers\AppServiceProvider::class);
 // $app->register(App\Providers\AuthServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
@@ -103,11 +113,5 @@ $app->router->group([
 ], function ($router) {
     require __DIR__.'/../routes/web.php';
 });
-
-// Register lumen-generator
-$app->register(Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
-
-// For storage
-$app->register(Illuminate\Filesystem\FilesystemServiceProvider::class);
 
 return $app;
