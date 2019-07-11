@@ -11,6 +11,10 @@
 |
 */
 
+$router->get('/appkey', function() {
+    return str_random(32);
+});
+
 $router->get('/trainers', 'TrainerController@index');
 $router->get('/trainers/{id}', 'TrainerController@show');
 $router->post('/trainers', 'TrainerController@store');
@@ -28,3 +32,9 @@ $router->get('/products/{id}', 'ProductController@show');
 $router->post('/products', 'ProductController@store');
 $router->put('/products/{id}', 'ProductController@update');
 $router->delete('/products/{id}', 'ProductController@destroy');
+
+// Customers
+$router->get('/customers', 'CustomerController@index');
+$router->get('/customers/{id}', 'CustomerController@show');
+$router->post('/customers', 'CustomerController@store');
+$router->post('/customers/update', 'CustomerController@update');
