@@ -38,3 +38,16 @@ $router->get('/customers', 'CustomerController@index');
 $router->get('/customers/{id}', 'CustomerController@show');
 $router->post('/customers', 'CustomerController@store');
 $router->post('/customers/update', 'CustomerController@update');
+
+//Routines
+$router->get('/routines', 'RoutineController@index');
+$router->get('/routines/{id}', 'RoutineController@show');
+$router->post('/routines', 'RoutineController@store');
+$router->post('/routines/update', 'RoutineController@update');
+
+//Sessions
+$router->get('/sessions', 'SessionController@index');
+$router->get('/sessions/{id}', 'SessionController@show');
+$router->post('/sessions', 'SessionController@store');
+$router->post('/sessions/update', 'SessionController@update');
+$router->post('/sessions/schedule', 'SessionController@schedule');
