@@ -23,7 +23,10 @@ $app = new Laravel\Lumen\Application(
     dirname(__DIR__)
 );
 
-$app->withFacades();
+$app->withFacades(true, [
+    Tymon\JWTAuth\Facades\JWTAuth::class => 'JWTAuth',
+    Tymon\JWTAuth\Facades\JWTFactory::class => 'JWTFactory'
+]);
 
 //class_alias('Illuminate\Support\Facades\Storage', 'Storage');
 
@@ -69,9 +72,9 @@ $app->middleware([
     App\Http\Middleware\CorsMiddleware::class
 ]);
 
-// $app->routeMiddleware([
-//     'auth' => App\Http\Middleware\Authenticate::class,
-// ]);
+$app->routeMiddleware([
+    'auth' => App\Http\Middleware\Authenticate::class,
+]);
 
 /*
 |--------------------------------------------------------------------------
@@ -93,8 +96,11 @@ $app->register(Illuminate\Filesystem\FilesystemServiceProvider::class);
 // Additional helper
 $app->register(Irazasyed\Larasupport\Providers\ArtisanServiceProvider::class);
 
+//JWT
+$app->register(Tymon\JWTAuth\Providers\LumenServiceProvider::class);
+
 // $app->register(App\Providers\AppServiceProvider::class);
-// $app->register(App\Providers\AuthServiceProvider::class);
+$app->register(App\Providers\AuthServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
 
 /*
