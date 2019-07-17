@@ -48,6 +48,7 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        /*
         if ($exception instanceof QueryException) {
             return response()->json([
                 "message" => "Error on query",
@@ -61,6 +62,7 @@ class Handler extends ExceptionHandler
                 "status" => Response::HTTP_NOT_FOUND
             ], Response::HTTP_NOT_FOUND);
         }
+        */
         
         return parent::render($request, $exception);
     }

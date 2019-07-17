@@ -11,7 +11,7 @@ use App\Session;
 class SessionController extends Controller
 {
     public function __construct() {
-        $this->middleware('auth');
+        //$this->middleware('auth');
     }
     /**
      * Display a listing of the resource.
@@ -103,5 +103,17 @@ class SessionController extends Controller
             "status" => Response::HTTP_OK,
             'url' => '/'
         ]);
+    }
+
+    public function scheduled($date, $routine) {
+        $sessions = DB::table('schedule_session')
+        ->join('customers', 'schedule_session.customer_id', '=', 'customers.id')
+        ->join('routines', 'schedule_session.routine_id', '=', 'routines.id')
+        ->rightJoin('sessions', 'schedule_session.session_id', '=', 'sessions.id')
+        ->where('schedule_session.routine_id', '=', $routine)
+        ->whereDate('schedule_session.session_date', '=', $date)
+        ->get();
+
+        return response()->json($sessions);
     }
 }

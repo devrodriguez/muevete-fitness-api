@@ -17,7 +17,7 @@ class ScheduleSessionTable extends Migration
             $table->unsignedInteger('customer_id');
             $table->unsignedInteger('routine_id');
             $table->unsignedInteger('session_id');
-            $table->string('session_date', 12);
+            $table->string('session_date', 50);
             $table->timestamps();
 
             $table->unique(['customer_id', 'routine_id', 'session_id', 'session_date'], 'schedule_session_primary');
