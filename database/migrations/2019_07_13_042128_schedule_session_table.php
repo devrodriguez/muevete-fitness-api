@@ -15,17 +15,15 @@ class ScheduleSessionTable extends Migration
     {
         Schema::create('schedule_session', function (Blueprint $table) {
             $table->unsignedInteger('customer_id');
-            $table->unsignedInteger('routine_id');
-            $table->unsignedInteger('session_id');
-            $table->string('session_date', 50);
+            $table->unsignedInteger('calendar_id');
+            
             $table->timestamps();
 
-            $table->unique(['customer_id', 'routine_id', 'session_id', 'session_date'], 'schedule_session_primary');
+            $table->unique(['customer_id', 'calendar_id']);
 
-            //Foreign
+            //Foreign keys
             $table->foreign('customer_id')->references('id')->on('customers');
-            $table->foreign('routine_id')->references('id')->on('routines');
-            $table->foreign('session_id')->references('id')->on('sessions');
+            $table->foreign('calendar_id')->references('id')->on('calendars');
         });
     }
 

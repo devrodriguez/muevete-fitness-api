@@ -13,4 +13,9 @@ composer install
 php artisan make:controller CustomerController --resource
 
 ## Make pivot table
-php artisan make:migration schedule_session_table --table=schedule_session
+php artisan make:migration schedule_calendar_table --table=schedule_calendar
+
+#Criterios de aceptacion
+- Un usuario no puede agendar una clase que tenga 23 agendados
+- No hay tiempo maximo para cancelar
+- No puede reservar si es un minuto despues del inicio de la clase

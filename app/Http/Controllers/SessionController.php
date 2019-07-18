@@ -78,7 +78,7 @@ class SessionController extends Controller
         $session->delete();
         return response()->json([
             'message' => 'Deleted successfully',
-            'url' => '/Sessions'
+            'url' => '/sessions'
         ], 200);
     }
 
@@ -87,15 +87,11 @@ class SessionController extends Controller
         $reqdata = $request->all();
 
         $customer = $reqdata['customer'];
-        $routine = $reqdata['routine'];
-        $session = $reqdata['session'];
-        $date = $reqdata['date'];
+        $calendar = $reqdata['calendar'];
 
         DB::table('schedule_session')->insert([
             "customer_id" => $customer,
-            "routine_id" => $routine,
-            "session_id" => $session,
-            "session_date" => $date,
+            "calendar_id" => $calendar
         ]);        
 
         return response()->json([
@@ -106,14 +102,27 @@ class SessionController extends Controller
     }
 
     public function scheduled($date, $routine) {
-        $sessions = DB::table('schedule_session')
+        //$sessions = Session::all();
+
+        $scheduledSessions = DB::table('schedule_session')
         ->join('customers', 'schedule_session.customer_id', '=', 'customers.id')
-        ->join('routines', 'schedule_session.routine_id', '=', 'routines.id')
-        ->rightJoin('sessions', 'schedule_session.session_id', '=', 'sessions.id')
-        ->where('schedule_session.routine_id', '=', $routine)
-        ->whereDate('schedule_session.session_date', '=', $date)
+        //->join('routines', 'schedule_session.routine_id', '=', 'routines.id')
+        ->rightJoin('calendars', 'schedule_session.calendar_id', 'calendars.id')
+        ->join('sessions', 'calendars.session_id', '=', 'sessions.id')
+        ->where('calendars.routine_id', '=', $routine)
+        ->whereDate('calendars.session_date', '=', $date)
+        ->orderBy('sessions.start_hour', 'asc')
+        ->select('schedule_session.customer_id',
+                 'calendars.session_date', 
+                 'calendars.id as calendar_id',
+                 'calendars.routine_id', 
+                 'calendars.session_id',
+                 'sessions.name',
+                 'sessions.period',
+                 'sessions.start_hour',
+                 'sessions.final_hour')
         ->get();
 
-        return response()->json($sessions);
+        return response()->json($scheduledSessions);
     }
 }

@@ -52,3 +52,6 @@ $router->post('/sessions', 'SessionController@store');
 $router->post('/sessions/update', 'SessionController@update');
 $router->get('/sessions/schedule/{date}/{routine}', 'SessionController@scheduled');
 $router->post('/sessions/schedule', 'SessionController@schedule');
+
+//Calendar
+$router->get('/calendars', 'CalendarController@index');
