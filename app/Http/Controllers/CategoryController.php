@@ -3,15 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Routine;
+use Illuminate\Support\Facades\DB;
 use App\Category;
+use App\Routine;
 
-class RoutineController extends Controller
+class CategoryController extends Controller
 {
-    public function __construct() {
-        //$this->middleware('auth', ['only' => ['index', 'create', 'update', 'delete']]);
-        //$this->middleware('auth');
-    }
     /**
      * Display a listing of the resource.
      *
@@ -19,7 +16,19 @@ class RoutineController extends Controller
      */
     public function index()
     {
-        return Routine::all();
+        $categories = Category::all();
+
+        return response()->json($categories);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        return Category::all();
     }
 
     /**
@@ -30,12 +39,7 @@ class RoutineController extends Controller
      */
     public function store(Request $request)
     {
-        $data = $request->all();
-        $routine = Routine::create($data);
-        return response()->json([
-            'routine' => $routine,
-            'url' => "/routines/{$routine->id}"
-        ], 201);
+        //
     }
 
     /**
@@ -46,8 +50,20 @@ class RoutineController extends Controller
      */
     public function show($id)
     {
-        $routine = Routine::findOrFail($id);
-        return $routine;
+        $category = Category::findOrFail($id);
+
+        return response()->json($category);
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        //
     }
 
     /**
@@ -59,10 +75,7 @@ class RoutineController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $data = $request->all();
-        $routine = Routine::findOrFail($id);
-        $routine->update($data);
-        return $routine;
+        //
     }
 
     /**
@@ -73,18 +86,19 @@ class RoutineController extends Controller
      */
     public function destroy($id)
     {
-        $routine = Routine::findOrFail($id);
-        $routine->delete();
-        return response()->json([
-            'message' => 'Deleted successfully',
-            'url' => '/routines'
-        ], 200);
+        //
     }
 
-    public function byCategory($id) 
-    {
-        $category = Category::findOrFail($id);
-        $routines = $category->routines;
+    public function routines() {
+        
+        $categories = Category::with('routines')->get();
+        
+        return response()->json($categories);
+    }
+
+    public function routinesByCategory($id) {
+        $categorie = Category::findOrFail($id);
+        $routines = $categorie->routines;
 
         return response()->json($routines);
     }

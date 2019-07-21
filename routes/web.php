@@ -42,6 +42,7 @@ $router->post('/customers/update', 'CustomerController@update');
 //Routines
 $router->get('/routines', 'RoutineController@index');
 $router->get('/routines/{id}', 'RoutineController@show');
+$router->get('/routines/bycategory/{id}', 'RoutineController@byCategory');
 $router->post('/routines', 'RoutineController@store');
 $router->post('/routines/update', 'RoutineController@update');
 
@@ -55,3 +56,9 @@ $router->post('/sessions/schedule', 'SessionController@schedule');
 
 //Calendar
 $router->get('/calendars', 'CalendarController@index');
+
+//Category
+$router->get('/categories', 'CategoryController@index');
+$router->get('/categories/routines', 'CategoryController@routines');
+$router->get('/categories/{id}', 'CategoryController@show');
+$router->get('/categories/{id}/routines', 'CategoryController@routinesByCategory');

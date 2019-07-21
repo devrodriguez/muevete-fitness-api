@@ -12,18 +12,42 @@ class RoutineSeeder extends Seeder
     public function run()
     {
         DB::table("routines")->insert([
-            "name" => "Kick Boxing",
-            "description" => "Fight doing excersice"
-        ]);
-
-        DB::table("routines")->insert([
-            "name" => "Zumba",
-            "description" => "Baile zumba"
-        ]);
-
-        DB::table("routines")->insert([
-            "name" => "Full Combat",
-            "description" => "Fight doing excersice"
+            [
+            "name" => "Abdomen",
+            "description" => ""
+            ],
+            [
+                "name" => "Crossfit",
+                "description" => ""
+            ],
+            [
+                "name" => "Gluteo",
+                "description" => ""
+            ],
+            [
+                "name" => "Military Training",
+                "description" => ""
+            ],
+            [
+                "name" => "Power Core XT",
+                "description" => ""
+            ],
+            [
+                "name" => "Funcional",
+                "description" => ""
+            ],
+            [
+                "name" => "GAP (Gluteo - Abdomen - Pierna)",
+                "description" => ""
+            ],
+            [
+                "name" => "Tren Inferior",
+                "description" => ""
+            ],
+            [
+                "name" => "Tren Superior",
+                "description" => ""
+            ]
         ]);
     }
 }

@@ -20,7 +20,7 @@ class SessionController extends Controller
      */
     public function index()
     {
-        return Session::orderBy("startHour")->get();
+        return Session::orderBy("start_hour")->get();
     }
 
     /**
