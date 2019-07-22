@@ -11,6 +11,7 @@ class RoutineController extends Controller
     public function __construct() {
         //$this->middleware('auth', ['only' => ['index', 'create', 'update', 'delete']]);
         //$this->middleware('auth');
+        $this->middleware('jwt.auth');
     }
     /**
      * Display a listing of the resource.

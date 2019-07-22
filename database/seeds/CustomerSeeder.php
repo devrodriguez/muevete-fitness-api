@@ -14,6 +14,7 @@ class CustomerSeeder extends Seeder
         DB::table('customers')->insert([
             "name" => "John Rodriguez",
             "email" => "john@hotmail.com",
+            "password" => "12345",
             "age" => 33
         ]);
     }
