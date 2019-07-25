@@ -42,14 +42,6 @@ class CalendarController extends Controller
 
         $calendar = Calendar::create($dataReq);
 
-        /*
-        DB::table('schedule_calendar')->insert([
-            'session_id' => $dataReq['session'],
-            'routine_id' => $dataReq['routine'],
-            'date_session' => $dataReq['date']
-        ]);
-        */
-
         return response()->json([
             "message" => "Calendario moificado",
             "status" => Response::HTTP_OK,

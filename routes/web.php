@@ -42,9 +42,9 @@ $router->post('/customers', 'CustomerController@store');
 $router->post('/customers/update', 'CustomerController@update');
 
 //Routines
-$router->group(['middleware' => 'jwt.auth'], function() use ($router) {
-    $router->get('/routines', 'RoutineController@index');
-});
+// $router->group(['middleware' => 'jwt.auth'], function() use ($router) {
+//     $router->get('/routines', 'RoutineController@index');
+// });
 
 $router->get('/routines', 'RoutineController@index');
 $router->get('/routines/{id}', 'RoutineController@show');
