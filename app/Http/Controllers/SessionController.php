@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
+use Carbon\Carbon;
 
 use App\Session;
 
@@ -91,7 +92,8 @@ class SessionController extends Controller
 
         DB::table('schedule_session')->insert([
             "customer_id" => $customer,
-            "calendar_id" => $calendar
+            "calendar_id" => $calendar,
+            "create_at" => Carbon::now()
         ]);        
 
         return response()->json([
@@ -101,13 +103,14 @@ class SessionController extends Controller
         ]);
     }
 
-    public function scheduled($date, $routine) {
-        //$sessions = Session::all();
-
+    public function scheduled($date, $routine, $customer) {
+        
         $scheduledSessions = DB::table('schedule_session')
         ->join('customers', 'schedule_session.customer_id', '=', 'customers.id')
-        //->join('routines', 'schedule_session.routine_id', '=', 'routines.id')
-        ->rightJoin('calendars', 'schedule_session.calendar_id', 'calendars.id')
+        ->rightJoin('calendars', function($join) use ($customer) {
+            $join->on('schedule_session.calendar_id', '=', 'calendars.id');
+            $join->on('schedule_session.customer_id', '=', DB::raw($customer));
+        })
         ->join('sessions', 'calendars.session_id', '=', 'sessions.id')
         ->where('calendars.routine_id', '=', $routine)
         ->whereDate('calendars.session_date', '=', $date)

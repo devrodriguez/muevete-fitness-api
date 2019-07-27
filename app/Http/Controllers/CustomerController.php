@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 use App\Customer;
 
@@ -29,7 +30,11 @@ class CustomerController extends Controller
     public function store(Request $request)
     {
         $data = $request->all();
-        $customer = Customer::create($data);
+        $customer = Customer::create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['password'])
+        ]);
 
         return response()->json([
             'customer' => $customer,
