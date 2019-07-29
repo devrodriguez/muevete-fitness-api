@@ -66,7 +66,7 @@ class AuthController extends Controller
 
         return response()->json([
             'status' => 400,
-            'error' => 'Login details provided does not exit.'
+            'error' => 'Login details provided does not exist.'
         ], 400);
     } 
 }

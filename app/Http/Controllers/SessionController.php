@@ -93,7 +93,7 @@ class SessionController extends Controller
         DB::table('schedule_session')->insert([
             "customer_id" => $customer,
             "calendar_id" => $calendar,
-            "create_at" => Carbon::now()
+            "created_at" => Carbon::now()
         ]);        
 
         return response()->json([

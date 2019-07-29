@@ -29,6 +29,12 @@ class CustomerController extends Controller
      */
     public function store(Request $request)
     {
+        $this->validate($request, [
+            'name' => 'required',
+            'email' => 'required|email',
+            'password' => 'required'
+        ]);
+
         $data = $request->all();
         $customer = Customer::create([
             'name' => $data['name'],
@@ -38,7 +44,8 @@ class CustomerController extends Controller
 
         return response()->json([
             'customer' => $customer,
-            'url' => "/customers/{$customer->id}"
+            'url' => "/customers/{$customer->id}",
+            'status' => 201
         ], 201);
     }
 
