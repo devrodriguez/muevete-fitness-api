@@ -31,6 +31,7 @@ class CustomerController extends Controller
     {
         $this->validate($request, [
             'name' => 'required',
+            'last_name' => 'required',
             'email' => 'required|email',
             'password' => 'required'
         ]);
@@ -38,6 +39,7 @@ class CustomerController extends Controller
         $data = $request->all();
         $customer = Customer::create([
             'name' => $data['name'],
+            'last_name' => $data['last_name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password'])
         ]);

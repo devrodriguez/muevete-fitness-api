@@ -14,16 +14,17 @@ class ScheduleSessionTable extends Migration
     public function up()
     {
         Schema::create('schedule_session', function (Blueprint $table) {
+            $table->unsignedInteger('weekly_id');
             $table->unsignedInteger('customer_id');
-            $table->unsignedInteger('calendar_id');
-            
+            $table->string('session_date', 20);
             $table->timestamps();
 
-            $table->unique(['customer_id', 'calendar_id']);
-
             //Foreign keys
+            $table->foreign('weekly_id')->references('id')->on('weeklies');
             $table->foreign('customer_id')->references('id')->on('customers');
-            $table->foreign('calendar_id')->references('id')->on('calendars');
+
+            //Unique
+            $table->unique(['weekly_id', 'customer_id', 'session_date']);
         });
     }
 

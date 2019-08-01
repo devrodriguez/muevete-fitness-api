@@ -31,8 +31,6 @@ class RoutineCategoryTable extends Migration
      */
     public function down()
     {
-        Schema::table('routine_category', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('routine_category');
     }
 }

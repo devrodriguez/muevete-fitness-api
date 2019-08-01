@@ -57,8 +57,9 @@ $router->get('/sessions', 'SessionController@index');
 $router->get('/sessions/{id}', 'SessionController@show');
 $router->post('/sessions', 'SessionController@store');
 $router->post('/sessions/update', 'SessionController@update');
-$router->get('/sessions/schedule/{date}/{routine}', 'SessionController@scheduled');
+$router->get('/sessions/scheduled/{date}/{routine}/{customer}', 'SessionController@scheduled');
 $router->post('/sessions/schedule', 'SessionController@schedule');
+$router->post('/sessions/scheduled/cancel', 'SessionController@cancelScheduled');
 
 //Calendar
 $router->get('/calendars', 'CalendarController@index');

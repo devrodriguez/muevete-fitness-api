@@ -13,8 +13,8 @@ class RoutineSeeder extends Seeder
     {
         DB::table("routines")->insert([
             [
-            "name" => "Abdomen",
-            "description" => ""
+                "name" => "Abdomen",
+                "description" => ""
             ],
             [
                 "name" => "Crossfit",
@@ -46,6 +46,34 @@ class RoutineSeeder extends Seeder
             ],
             [
                 "name" => "Tren Superior",
+                "description" => ""
+            ],
+            [
+                "name" => "Fitcombat",
+                "description" => ""
+            ],
+            [
+                "name" => "Rumba",
+                "description" => ""
+            ],
+            [
+                "name" => "Yoga",
+                "description" => ""
+            ],
+            [
+                "name" => "Zumba",
+                "description" => ""
+            ],
+            [
+                "name" => "Ballet",
+                "description" => ""
+            ],
+            [
+                "name" => "Salsa",
+                "description" => ""
+            ],
+            [
+                "name" => "Full Combat",
                 "description" => ""
             ]
         ]);

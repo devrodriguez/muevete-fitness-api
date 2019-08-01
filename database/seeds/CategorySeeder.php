@@ -24,8 +24,70 @@ class CategorySeeder extends Seeder
         ]);
 
         DB::table('routine_category')->insert([
-            "routine_id" => 1,
-            "category_id" => 1
+            [
+                "category_id" => 1,
+                "routine_id" => 1
+            ],
+            [
+                "category_id" => 1,
+                "routine_id" => 2
+            ],
+            [
+                "category_id" => 1,
+                "routine_id" => 3
+            ],
+            [
+                "category_id" => 1,
+                "routine_id" => 4
+            ],
+            [
+                "category_id" => 1,
+                "routine_id" => 5
+            ],
+            [
+                "category_id" => 1,
+                "routine_id" => 6
+            ],
+            [
+                "category_id" => 1,
+                "routine_id" => 7
+            ],
+            [
+                "category_id" => 2,
+                "routine_id" => 8
+            ],
+            [
+                "category_id" => 2,
+                "routine_id" => 9
+            ],
+            [
+                "category_id" => 3,
+                "routine_id" => 10
+            ],
+            [
+                "category_id" => 3,
+                "routine_id" => 11
+            ],
+            [
+                "category_id" => 3,
+                "routine_id" => 12
+            ],
+            [
+                "category_id" => 3,
+                "routine_id" => 13
+            ],
+            [
+                "category_id" => 3,
+                "routine_id" => 14
+            ],
+            [
+                "category_id" => 3,
+                "routine_id" => 15
+            ],
+            [
+                "category_id" => 3,
+                "routine_id" => 16
+            ]
         ]);
     }
 }

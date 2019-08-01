@@ -85,14 +85,14 @@ class SessionController extends Controller
 
     public function schedule(Request $request) 
     {
-        $reqdata = $request->all();
-
-        $customer = $reqdata['customer'];
-        $calendar = $reqdata['calendar'];
+        $weekly = $request->weekly;
+        $customer = $request->customer;
+        $date = $request->date;
 
         DB::table('schedule_session')->insert([
+            "weekly_id" => $weekly,
             "customer_id" => $customer,
-            "calendar_id" => $calendar,
+            "session_date" => $date,
             "created_at" => Carbon::now()
         ]);        
 
@@ -107,19 +107,18 @@ class SessionController extends Controller
         
         $scheduledSessions = DB::table('schedule_session')
         ->join('customers', 'schedule_session.customer_id', '=', 'customers.id')
-        ->rightJoin('calendars', function($join) use ($customer) {
-            $join->on('schedule_session.calendar_id', '=', 'calendars.id');
+        ->rightJoin('weeklies', function($join) use ($customer, $date) {
+            $join->on('schedule_session.weekly_id', '=', 'weeklies.id');
             $join->on('schedule_session.customer_id', '=', DB::raw($customer));
+            $join->on(DB::raw("date_format(schedule_session.session_date, '%Y-%m-%d')"), '=', DB::raw("'".$date."'"));
         })
-        ->join('sessions', 'calendars.session_id', '=', 'sessions.id')
-        ->where('calendars.routine_id', '=', $routine)
-        ->whereDate('calendars.session_date', '=', $date)
+        ->join('sessions', 'weeklies.session_id', '=', 'sessions.id')
+        ->where('weeklies.routine_id', '=', $routine)
         ->orderBy('sessions.start_hour', 'asc')
         ->select('schedule_session.customer_id',
-                 'calendars.session_date', 
-                 'calendars.id as calendar_id',
-                 'calendars.routine_id', 
-                 'calendars.session_id',
+                 'schedule_session.session_date', 
+                 'weeklies.id as weekly_id',
+                 'weeklies.session_id',
                  'sessions.name',
                  'sessions.period',
                  'sessions.start_hour',
@@ -127,5 +126,19 @@ class SessionController extends Controller
         ->get();
 
         return response()->json($scheduledSessions);
+    }
+
+    public function cancelScheduled(Request $request) {
+        $weekly = $request->weekly; 
+        $customer = $request->customer; 
+        $date = $request->date;
+
+        $deleted = DB::table('schedule_session')
+        ->where('schedule_session.weekly_id', '=', $weekly)
+        ->where('schedule_session.customer_id', '=', $customer)
+        ->where(DB::raw("date_format(schedule_session.session_date, '%Y-%m-%d')"), '=', DB::raw("'".$date."'"))
+        ->delete();
+
+        return response()->json($deleted);
     }
 }
