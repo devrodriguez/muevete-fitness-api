@@ -51,6 +51,7 @@ $router->get('/routines/{id}', 'RoutineController@show');
 $router->get('/routines/bycategory/{id}', 'RoutineController@byCategory');
 $router->post('/routines', 'RoutineController@store');
 $router->post('/routines/update', 'RoutineController@update');
+$router->get('/routines/reports/scheduled/{id}', 'RoutineController@scheduled');
 
 //Sessions
 $router->get('/sessions', 'SessionController@index');
