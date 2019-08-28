@@ -91,7 +91,10 @@ class RoutineController extends Controller
         return response()->json($routines);
     }
 
-    public function scheduled($id = null) {
+    public function scheduled(Request $request) {
+        $id = $request->id;
+        $date = $request->date;
+
         $scheduled = DB::table('schedule_session')
         ->join('customers', 'schedule_session.customer_id', 'customers.id')
         ->join('weeklies', 'schedule_session.weekly_id', 'weeklies.id')
@@ -107,6 +110,10 @@ class RoutineController extends Controller
 
         if ($id > 0) {
             $scheduled->where('routines.id', '=', $id);
+        }
+
+        if (!empty($date)) {
+            $scheduled->where('schedule_session.session_date', '=', DB::raw("'".$date."'"));
         }
 
         return response()->json($scheduled->get());

@@ -3,7 +3,10 @@
 require_once __DIR__.'/../vendor/autoload.php';
 
 try {
-    (new Dotenv\Dotenv(dirname(__DIR__)))->load();
+    //(new Dotenv\Dotenv(dirname(__DIR__)))->load();
+    (new Laravel\Lumen\Bootstrap\LoadEnvironmentVariables(
+        dirname(__DIR__)
+    ))->bootstrap();
 } catch (Dotenv\Exception\InvalidPathException $e) {
     //
 }
@@ -93,6 +96,16 @@ $app->register(Illuminate\Filesystem\FilesystemServiceProvider::class);
 
 // Additional helper
 $app->register(Irazasyed\Larasupport\Providers\ArtisanServiceProvider::class);
+
+// Mail
+$app->register(Illuminate\Mail\MailServiceProvider::class);
+
+
+/* Configure Mail */
+$app->configure('mail');
+$app->alias('mailer', Illuminate\Mail\Mailer::class);
+$app->alias('mailer', Illuminate\Contracts\Mail\Mailer::class);
+$app->alias('mailer', Illuminate\Contracts\Mail\MailQueue::class);
 
 /*
 |--------------------------------------------------------------------------

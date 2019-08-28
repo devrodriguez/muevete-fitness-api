@@ -89,6 +89,18 @@ class SessionController extends Controller
         $customer = $request->customer;
         $date = $request->date;
 
+        $scheduled = DB::table('schedule_session')
+        ->where('weekly_id', '=', $weekly)
+        ->where('session_date','=', $date)
+        ->select('*')
+        ->get();
+
+        if($scheduled->count() > 20) {
+            return response()->json([
+                'message' => 'Full'
+            ]);
+        }
+
         DB::table('schedule_session')->insert([
             "weekly_id" => $weekly,
             "customer_id" => $customer,

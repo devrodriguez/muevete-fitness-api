@@ -7,8 +7,10 @@ use Firebase\JWT\JWT;
 use Illuminate\Http\Request;
 use Firebase\JWT\ExpiredException;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Laravel\Lumen\Routing\Controller;
 use App\Customer;
+use App\Mail\PasswordForgotten;
 
 class AuthController extends Controller 
 {
@@ -35,13 +37,13 @@ class AuthController extends Controller
     }
 
     
-    public function userAuthenticate(Customer $user) {
-        $this->validate($this->request, [
+    public function userAuthenticate(Request $request) {
+        $this->validate($request, [
             'email'     => 'required',
             'password'  => 'required'
         ]);
 
-        $user = Customer::where('email', $this->request->email)->first();
+        $user = Customer::where('email', $request->email)->first();
 
         if (!$user) {
             
@@ -53,7 +55,7 @@ class AuthController extends Controller
         }
       
         // Verify the password and generate the token
-        if (Hash::check($this->request->password, $user->password)) { 
+        if (Hash::check($request->password, $user->password)) { 
             return response()->json([
                 'status'  => 200,
                 'message' => 'Login Successful',
@@ -69,4 +71,21 @@ class AuthController extends Controller
             'error' => 'Login details provided does not exist.'
         ], 400);
     } 
+
+    public function passwordForgotten(Request $request) {
+        $email = $request->email;
+        $customer = Customer::where('email', $request->email)->first();
+        $newPass = str_random(8);
+        $customer->password = Hash::make($newPass);
+        $customer->save();
+        $data = ['pass' => $newPass];
+
+        $res = Mail::to($email, $customer->name)
+        ->send(new PasswordForgotten($data));
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Mail sent | Password recovered'
+        ]);
+    }
 }
