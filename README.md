@@ -15,6 +15,9 @@ php artisan make:controller CustomerController --resource
 ## Make pivot table
 php artisan make:migration schedule_calendar_table --table=schedule_calendar
 
+## Migrate just one table
+php artisan migrate --path=/database/migrations/2019_07_13_042138_create_available_day_table.php
+
 ## Criterios de aceptacion
 - Un usuario no puede agendar una clase que tenga 23 agendados
 - No hay tiempo maximo para cancelar

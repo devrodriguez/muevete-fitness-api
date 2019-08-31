@@ -59,7 +59,7 @@ $router->get('/sessions', 'SessionController@index');
 $router->get('/sessions/{id}', 'SessionController@show');
 $router->post('/sessions', 'SessionController@store');
 $router->post('/sessions/update', 'SessionController@update');
-$router->get('/sessions/scheduled/{date}/{routine}/{customer}', 'SessionController@scheduled');
+$router->get('/sessions/scheduled', 'SessionController@scheduled');
 $router->post('/sessions/schedule', 'SessionController@schedule');
 $router->post('/sessions/scheduled/cancel', 'SessionController@cancelScheduled');
 
@@ -69,5 +69,9 @@ $router->get('/calendars', 'CalendarController@index');
 //Category
 $router->get('/categories', 'CategoryController@index');
 $router->get('/categories/routines', 'CategoryController@routines');
+$router->get('/categories/routinesbyday', 'CategoryController@routinesByDay');
 $router->get('/categories/{id}', 'CategoryController@show');
 $router->get('/categories/{id}/routines', 'CategoryController@routinesByCategory');
+
+//Available days
+$router->get('/availableDays', 'AvailableDayController@index');

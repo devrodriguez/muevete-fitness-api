@@ -101,6 +101,34 @@ class CategoryController extends Controller
         return response()->json($categories);
     }
 
+    public function routinesByDay(Request $request) {
+        date_default_timezone_set('America/Lima');
+        $timestam = strtotime($request->date);
+        $day = date('N', $timestam);
+
+        //dd($day);
+
+        $categories = DB::table('categories')
+        ->join('routine_category', 'categories.id', 'routine_category.category_id')
+        ->join('routines', 'routine_category.routine_id', 'routines.id')
+        ->join('routine_availability', 'routine_availability.routine_id', 'routines.id')
+        ->join('available_days', 'routine_availability.available_day_id', 'available_days.id')
+        ->select(
+            'categories.name as category_name', 
+            'routines.id as routine_id', 
+            'routines.name as routine_name', 
+            'routines.description as routine_desc',
+            'available_days.name as day_name',
+            'available_days.id as day_id',
+            'available_days.day_of_week'
+            )
+        ->get();
+
+        $categories = $categories->where('day_of_week', $day)->groupBy('category_name');
+        
+        return response()->json($categories);
+    }
+
     public function routinesByCategory($id) {
         $categorie = Category::findOrFail($id);
         $routines = $categorie->routines;

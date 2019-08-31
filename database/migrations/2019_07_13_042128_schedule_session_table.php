@@ -16,7 +16,7 @@ class ScheduleSessionTable extends Migration
         Schema::create('schedule_session', function (Blueprint $table) {
             $table->unsignedInteger('weekly_id');
             $table->unsignedInteger('customer_id');
-            $table->string('session_date', 20);
+            $table->string('session_date', 50);
             $table->timestamps();
 
             //Foreign keys

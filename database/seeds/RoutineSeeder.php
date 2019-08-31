@@ -75,6 +75,14 @@ class RoutineSeeder extends Seeder
             [
                 "name" => "Full Combat",
                 "description" => ""
+            ],
+            [
+                "name" => "Tonificacion Muscular Superior",
+                "description" => ""
+            ],
+            [
+                "name" => "Zumba Neon",
+                "description" => ""
             ]
         ]);
     }
