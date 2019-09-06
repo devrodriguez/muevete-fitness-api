@@ -53,14 +53,17 @@ $router->get('/routines/bycategory/{id}', 'RoutineController@byCategory');
 $router->post('/routines', 'RoutineController@store');
 $router->post('/routines/update', 'RoutineController@update');
 $router->get('/routines/reports/scheduled', 'RoutineController@scheduled');
+$router->get('/routines/schedule', 'RoutineController@getScheduleRoutine');
+$router->post('/routines/schedule/remove', 'RoutineController@removeScheduleRoutine');
+$router->post('/routines/schedule/create', 'RoutineController@createScheduleRoutine');
 
 //Sessions
 $router->get('/sessions', 'SessionController@index');
 $router->get('/sessions/{id}', 'SessionController@show');
 $router->post('/sessions', 'SessionController@store');
 $router->post('/sessions/update', 'SessionController@update');
-$router->get('/sessions/scheduled', 'SessionController@scheduled');
 $router->post('/sessions/schedule', 'SessionController@schedule');
+$router->get('/sessions/scheduled', 'SessionController@scheduled');
 $router->post('/sessions/scheduled/cancel', 'SessionController@cancelScheduled');
 
 //Calendar

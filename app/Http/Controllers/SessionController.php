@@ -21,7 +21,7 @@ class SessionController extends Controller
      */
     public function index()
     {
-        return Session::orderBy("start_hour")->get();
+        return Session::orderBy("period")->get();
     }
 
     /**
@@ -91,7 +91,11 @@ class SessionController extends Controller
 
         $scheduled = DB::table('schedule_session')
         ->where('weekly_id', '=', $weekly)
-        ->where('session_date','=', $date)
+        ->where(
+            DB::raw("date_format(session_date, '%Y-%m-%d')"), 
+            '=', 
+            DB::raw("date_format('".$date."', '%Y-%m-%d')")
+        )
         ->select('*')
         ->get();
 
@@ -126,11 +130,16 @@ class SessionController extends Controller
         ->rightJoin('weeklies', function($join) use ($customer, $date) {
             $join->on('schedule_session.weekly_id', '=', 'weeklies.id');
             $join->on('schedule_session.customer_id', '=', DB::raw($customer));
-            $join->on(DB::raw("schedule_session.session_date"), '=', DB::raw("'".$date."'"));
-            //$join->on(DB::raw("date_format(schedule_session.session_date, '%Y-%m-%d')"), '=', DB::raw("'".$date."'"));
+            $join->on(
+                DB::raw("date_format(schedule_session.session_date, '%Y-%m-%d')"), 
+                '=', 
+                DB::raw("date_format('".$date."', '%Y-%m-%d')")
+            );
         })
         ->join('sessions', 'weeklies.session_id', '=', 'sessions.id')
-        ->where('weeklies.routine_id', '=', $routine)
+        ->join('routine_availability', 'weeklies.routine_availability_id', 'routine_availability.id')
+        ->join('routines', 'routine_availability.routine_id', 'routines.id')
+        ->where('routines.id', '=', $routine)
         ->orderBy('sessions.start_hour', 'asc')
         ->select('schedule_session.customer_id',
                  'schedule_session.session_date', 
@@ -153,8 +162,11 @@ class SessionController extends Controller
         $deleted = DB::table('schedule_session')
         ->where('schedule_session.weekly_id', '=', $weekly)
         ->where('schedule_session.customer_id', '=', $customer)
-        ->where(DB::raw("schedule_session.session_date"), '=', DB::raw("'".$date."'"))
-        //->where(DB::raw("date_format(schedule_session.session_date, '%Y-%m-%d')"), '=', DB::raw("'".$date."'"))
+        ->where(
+            DB::raw("date_format(schedule_session.session_date, '%Y-%m-%d')"), 
+            '=', 
+            DB::raw("date_format('".$date."', '%Y-%m-%d')")
+        )
         ->delete();
 
         return response()->json($deleted);

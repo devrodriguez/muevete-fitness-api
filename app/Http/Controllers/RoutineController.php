@@ -95,10 +95,13 @@ class RoutineController extends Controller
         $id = $request->id;
         $date = $request->date;
 
+        //dd($date);
+
         $scheduled = DB::table('schedule_session')
         ->join('customers', 'schedule_session.customer_id', 'customers.id')
         ->join('weeklies', 'schedule_session.weekly_id', 'weeklies.id')
-        ->join('routines', 'weeklies.routine_id', 'routines.id')
+        ->join('routine_availability', 'weeklies.routine_availability_id', 'routine_availability.id')
+        ->join('routines', 'routine_availability.routine_id', 'routines.id')
         ->join('sessions', 'weeklies.session_id', 'sessions.id')
         ->select(
             'customers.name as customer_name', 
@@ -113,9 +116,67 @@ class RoutineController extends Controller
         }
 
         if (!empty($date)) {
-            $scheduled->where('schedule_session.session_date', '=', DB::raw("'".$date."'"));
+            $scheduled->where(
+                DB::raw("date_format(schedule_session.session_date, '%Y-%m-%d')"), 
+                '=', 
+                DB::raw("date_format('".$date."', '%Y-%m-%d')")
+            );
         }
 
         return response()->json($scheduled->get());
+    }
+
+    public function createScheduleRoutine(Request $request) {
+        $routine = $request->routine;
+        $day = $request->day;
+        $session = $request->session;
+
+        $available = DB::table('routine_availability')
+        ->where('routine_id', $routine)
+        ->where('available_day_id', $day)
+        ->first();
+
+        //dd($available);
+        if($available) {
+            $insertId = DB::table('weeklies')->insertGetId([
+                "routine_availability_id" => $available->id,
+                "session_id" => $session
+            ]);
+        }
+
+        return response()->json($insertId);
+
+    }
+
+    public function removeScheduleRoutine(Request $request) {
+        $disabled = DB::table('weeklies')
+        ->where('id', $request->weeklie_id)
+        ->update(['weeklies.enabled' => false]);
+
+        return response()->json($disabled);
+    }
+
+    public function getScheduleRoutine(Request $request) {
+        $schedules = DB::table('weeklies')
+        ->join('sessions', 'weeklies.session_id', 'sessions.id')
+        ->join('routine_availability', 'weeklies.routine_availability_id', 'routine_availability.id')
+        ->join('routines', 'routine_availability.routine_id', 'routines.id')
+        ->join('available_days', 'routine_availability.available_day_id', 'available_days.id')
+        ->where('weeklies.enabled', true)
+        ->orderBy('routines.id', 'asc')
+        ->orderBy('available_days.id', 'asc')
+        ->select(
+            'routines.id as routine_id',
+            'routines.name as routine_name',
+            'weeklies.id as weeklie_id',
+            'sessions.id as session_id',
+            'sessions.name as session_name',
+            'sessions.period',
+            'available_days.id as available_day_id',
+            'available_days.name as available_day_name'
+        )
+        ->get();
+
+        return response()->json($schedules);
     }
 }

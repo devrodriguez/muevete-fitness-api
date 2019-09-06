@@ -14,6 +14,7 @@ class CreateRoutineAvailabilityTable extends Migration
     public function up()
     {
         Schema::create('routine_availability', function (Blueprint $table) {
+            $table->increments('id');
             $table->unsignedInteger('routine_id');
             $table->unsignedInteger('available_day_id');
 
