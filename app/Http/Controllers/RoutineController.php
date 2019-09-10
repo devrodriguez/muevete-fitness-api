@@ -130,6 +130,8 @@ class RoutineController extends Controller
         $routine = $request->routine;
         $day = $request->day;
         $session = $request->session;
+        $message = [];
+        $insertId = -1;
 
         $available = DB::table('routine_availability')
         ->where('routine_id', $routine)
@@ -138,14 +140,36 @@ class RoutineController extends Controller
 
         //dd($available);
         if($available) {
-            $insertId = DB::table('weeklies')->insertGetId([
-                "routine_availability_id" => $available->id,
-                "session_id" => $session
-            ]);
+            $weeklie = DB::table('weeklies')
+            ->where('routine_availability_id', $available->id)
+            ->where('session_id', $session);
+            
+            
+            if ($weeklie->first()) {
+                $weeklie->update([
+                    'enabled' => true
+                ]);
+            }
+            else 
+            {
+                DB::table('weeklies')
+                ->insertGetId([
+                    "routine_availability_id" => $available->id,
+                    "session_id" => $session
+                ]);   
+            }
+
+            $insertId = 1;
+            array_push($message, "Sesion creada");
+        }
+        else {
+            array_push($message, "Esta rutina no tiene disponibilidad para este día");
         }
 
-        return response()->json($insertId);
-
+        return response()->json([
+            "data" => $insertId,
+            "message" => $message
+        ]);
     }
 
     public function removeScheduleRoutine(Request $request) {
@@ -153,7 +177,10 @@ class RoutineController extends Controller
         ->where('id', $request->weeklie_id)
         ->update(['weeklies.enabled' => false]);
 
-        return response()->json($disabled);
+        return response()->json([
+            "data" => $disabled,
+            "message" => ["Session deshabilitada"]
+        ]);
     }
 
     public function getScheduleRoutine(Request $request) {
@@ -169,11 +196,12 @@ class RoutineController extends Controller
             'routines.id as routine_id',
             'routines.name as routine_name',
             'weeklies.id as weeklie_id',
+            'weeklies.routine_availability_id',
             'sessions.id as session_id',
             'sessions.name as session_name',
             'sessions.period',
             'available_days.id as available_day_id',
-            'available_days.name as available_day_name'
+            'available_days.name as available_day_name',
         )
         ->get();
 
