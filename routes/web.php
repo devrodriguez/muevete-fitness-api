@@ -56,6 +56,9 @@ $router->get('/routines/reports/scheduled', 'RoutineController@scheduled');
 $router->get('/routines/schedule', 'RoutineController@getScheduleRoutine');
 $router->post('/routines/schedule/remove', 'RoutineController@removeScheduleRoutine');
 $router->post('/routines/schedule/create', 'RoutineController@createScheduleRoutine');
+$router->get('/routines/availableDay', 'RoutineController@getRoutineAvailabilities');
+$router->post('/routines/availableDay/remove', 'RoutineController@removeRoutineAvailabilities');
+$router->post('/routines/availableDay/create', 'RoutineController@createRoutineAvailability');
 
 //Sessions
 $router->get('/sessions', 'SessionController@index');

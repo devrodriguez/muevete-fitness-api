@@ -120,10 +120,12 @@ class SessionController extends Controller
     }
 
     public function scheduled(Request $request) {
+        date_default_timezone_set('America/Lima');
+        $timestam = strtotime($request->date);
+        $day = date('N', $timestam);
         $date = $request->date;
         $routine = $request->routine;
         $customer = $request->customer;
-        //dd($date);
 
         $scheduledSessions = DB::table('schedule_session')
         ->join('customers', 'schedule_session.customer_id', '=', 'customers.id')
@@ -138,8 +140,12 @@ class SessionController extends Controller
         })
         ->join('sessions', 'weeklies.session_id', '=', 'sessions.id')
         ->join('routine_availability', 'weeklies.routine_availability_id', 'routine_availability.id')
+        ->join('available_days', 'routine_availability.available_day_id', 'available_days.id')
         ->join('routines', 'routine_availability.routine_id', 'routines.id')
         ->where('routines.id', '=', $routine)
+        ->where('day_of_week', '=', $day)
+        ->where('routine_availability.enabled', true)
+        ->where('weeklies.enabled', true)
         ->orderBy('sessions.start_hour', 'asc')
         ->select('schedule_session.customer_id',
                  'schedule_session.session_date', 
@@ -148,7 +154,8 @@ class SessionController extends Controller
                  'sessions.name',
                  'sessions.period',
                  'sessions.start_hour',
-                 'sessions.final_hour')
+                 'sessions.final_hour',
+                 'day_of_week')
         ->get();
 
         return response()->json($scheduledSessions);

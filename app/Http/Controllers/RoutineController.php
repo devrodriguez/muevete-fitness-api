@@ -95,8 +95,6 @@ class RoutineController extends Controller
         $id = $request->id;
         $date = $request->date;
 
-        //dd($date);
-
         $scheduled = DB::table('schedule_session')
         ->join('customers', 'schedule_session.customer_id', 'customers.id')
         ->join('weeklies', 'schedule_session.weekly_id', 'weeklies.id')
@@ -131,51 +129,61 @@ class RoutineController extends Controller
         $day = $request->day;
         $session = $request->session;
         $message = [];
-        $insertId = -1;
+        $inserted = -1;
 
         $available = DB::table('routine_availability')
         ->where('routine_id', $routine)
         ->where('available_day_id', $day)
+        ->where('enabled', true)
         ->first();
 
-        //dd($available);
         if($available) {
-            $weeklie = DB::table('weeklies')
-            ->where('routine_availability_id', $available->id)
-            ->where('session_id', $session);
-            
-            
-            if ($weeklie->first()) {
-                $weeklie->update([
-                    'enabled' => true
-                ]);
-            }
-            else 
-            {
-                DB::table('weeklies')
-                ->insertGetId([
-                    "routine_availability_id" => $available->id,
-                    "session_id" => $session
-                ]);   
-            }
+            $inserted = DB::table('weeklies')
+            ->updateOrInsert([
+                "routine_availability_id" => $available->id,
+                "session_id" => $session
+            ],
+            [
+                "enabled" => true
+            ]);
 
-            $insertId = 1;
-            array_push($message, "Sesion creada");
+            if($inserted) {
+                array_push($message, "Sesion creada");
+            } else {
+                array_push($message, "Esta sesion ya existe");
+            }
         }
         else {
             array_push($message, "Esta rutina no tiene disponibilidad para este día");
         }
 
         return response()->json([
-            "data" => $insertId,
+            "data" => $inserted,
             "message" => $message
         ]);
     }
 
     public function removeScheduleRoutine(Request $request) {
+        $removed = -1;
+
+        $scheduledCount = DB::table('schedule_session')
+        ->join('weeklies', 'schedule_session.weekly_id', 'weeklies.id')
+        ->where('weeklies.enabled', true)
+        ->where('weeklies.id', $request->weeklie_id)
+        ->count();
+
+        if($scheduledCount > 0) {
+            return response()->json([
+                "data" => $removed,
+                "message" => ["Esta sesion ya tiene agenda"]
+            ]);
+        }
+
         $disabled = DB::table('weeklies')
         ->where('id', $request->weeklie_id)
-        ->update(['weeklies.enabled' => false]);
+        ->update([
+            'weeklies.enabled' => false
+        ]);
 
         return response()->json([
             "data" => $disabled,
@@ -190,8 +198,10 @@ class RoutineController extends Controller
         ->join('routines', 'routine_availability.routine_id', 'routines.id')
         ->join('available_days', 'routine_availability.available_day_id', 'available_days.id')
         ->where('weeklies.enabled', true)
-        ->orderBy('routines.id', 'asc')
-        ->orderBy('available_days.id', 'asc')
+        ->orderBy('routines.name')
+        ->orderBy('available_days.day_of_week')
+        ->orderBy('sessions.start_hour')
+        ->orderBy('sessions.period')
         ->select(
             'routines.id as routine_id',
             'routines.name as routine_name',
@@ -201,10 +211,88 @@ class RoutineController extends Controller
             'sessions.name as session_name',
             'sessions.period',
             'available_days.id as available_day_id',
-            'available_days.name as available_day_name',
+            'available_days.name as available_day_name'
         )
         ->get();
 
         return response()->json($schedules);
+    }
+
+    public function getRoutineAvailabilities() {
+        $availables = DB::table('routine_availability')
+        ->join('routines', 'routine_availability.routine_id', 'routines.id')
+        ->join('available_days', 'routine_availability.available_day_id', 'available_days.id')
+        ->where('routine_availability.enabled', true)
+        ->orderBy('routines.name')
+        ->orderBy('available_days.day_of_week')
+        ->select(
+            'routine_availability.id',
+            'routines.id as routine_id',
+            'routines.name as routine_name',
+            'available_days.id as available_days_id',
+            'available_days.name as available_days_name'
+        )
+        ->get();
+
+        return response()->json($availables);
+    }
+
+    public function removeRoutineAvailabilities(Request $request) {
+        $removed = -1;
+
+        $scheduledCount = DB::table('schedule_session')
+        ->join('weeklies', 'schedule_session.weekly_id', 'weeklies.id')
+        ->join('routine_availability', 'weeklies.routine_availability_id', 'routine_availability.id')
+        ->where('weeklies.enabled', true)
+        ->where('routine_availability.id', $request->id)
+        ->count();
+
+        $weeklieCount = DB::table('weeklies')
+        ->where('routine_availability_id', $request->id)
+        ->where('enabled', true)
+        ->count();
+
+        if($scheduledCount > 0) {
+            return response()->json([
+                "data" => $removed,
+                "message" => ["Esta rutina ya tiene ".$scheduledCount." sesiones agendadas"]
+            ]);
+        }
+        else if ($weeklieCount > 0) {
+            return response()->json([
+                "data" => $removed,
+                "message" => ["Esta rutina ya tiene ".$weeklieCount." sesiones programadas"]
+            ]);
+        }
+
+        $removed = DB::table('routine_availability')
+        ->where('id', $request->id)
+        ->update([
+            'enabled' => false
+        ]);
+
+        return response()->json([
+            "data" => $removed,
+            "message" => ["Disponibilidad eliminada"]
+        ]);
+    }
+
+    public function createRoutineAvailability(Request $request) {
+        $routine = $request->routine;
+        $day = $request->day;
+
+        $inserted = DB::table('routine_availability')
+        ->updateOrInsert([
+            "routine_id" => $routine,
+            "available_day_id" => $day
+        ],
+        [
+            "enabled" => true
+        ]);
+
+        return response()->json([
+            "data" => $inserted,
+            "message" => "Rutina asignada"
+        ]);
     }
 }
