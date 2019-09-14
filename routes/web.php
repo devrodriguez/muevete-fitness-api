@@ -48,25 +48,28 @@ $router->post('/customers/update', 'CustomerController@update');
 // });
 
 $router->get('/routines', 'RoutineController@index');
-$router->get('/routines/{id}', 'RoutineController@show');
+$router->get('/routines/bycategory', 'RoutineController@getRoutineCategories');
+$router->post('/routines/bycategory/create', 'RoutineController@createRoutineCategory');
+$router->post('/routines/bycategory/remove', 'RoutineController@removeRoutineCategory');
 $router->get('/routines/bycategory/{id}', 'RoutineController@byCategory');
 $router->post('/routines', 'RoutineController@store');
 $router->post('/routines/update', 'RoutineController@update');
-$router->get('/routines/reports/scheduled', 'RoutineController@scheduled');
 $router->get('/routines/schedule', 'RoutineController@getScheduleRoutine');
+$router->get('/routines/availableDay', 'RoutineController@getRoutineAvailabilities');
+$router->get('/routines/{id}', 'RoutineController@show');
+$router->get('/routines/reports/scheduled', 'RoutineController@scheduled');
 $router->post('/routines/schedule/remove', 'RoutineController@removeScheduleRoutine');
 $router->post('/routines/schedule/create', 'RoutineController@createScheduleRoutine');
-$router->get('/routines/availableDay', 'RoutineController@getRoutineAvailabilities');
 $router->post('/routines/availableDay/remove', 'RoutineController@removeRoutineAvailabilities');
 $router->post('/routines/availableDay/create', 'RoutineController@createRoutineAvailability');
 
 //Sessions
 $router->get('/sessions', 'SessionController@index');
-$router->get('/sessions/{id}', 'SessionController@show');
 $router->post('/sessions', 'SessionController@store');
 $router->post('/sessions/update', 'SessionController@update');
 $router->post('/sessions/schedule', 'SessionController@schedule');
 $router->get('/sessions/scheduled', 'SessionController@scheduled');
+$router->get('/sessions/{id}', 'SessionController@show');
 $router->post('/sessions/scheduled/cancel', 'SessionController@cancelScheduled');
 
 //Calendar

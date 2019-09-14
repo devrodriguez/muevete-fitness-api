@@ -295,4 +295,41 @@ class RoutineController extends Controller
             "message" => "Rutina asignada"
         ]);
     }
+
+    public function getRoutineCategories() {
+        $routines = DB::table('routine_category as rc')
+        ->join('categories as c', 'rc.category_id', 'c.id')
+        ->join('routines as r', 'rc.routine_id', 'r.id')
+        ->orderBy('c.name')
+        ->orderBy('r.name')
+        ->select(
+            'c.id as category_id',
+            'c.name as category_name',
+            'r.id as routine_id',
+            'r.name as routine_name'
+        )->get();
+
+        return response()->json($routines);
+    }
+
+    public function removeRoutineCategory(Request $request) {
+        //dd($request);
+
+        $removed = DB::table('routine_category')
+        ->where('category_id', $request->category_id)
+        ->where('routine_id', $request->routine_id)
+        ->delete();
+
+        return response()->json($removed);
+    }
+
+    public function createRoutineCategory(Request $request) {
+        $inserted = DB::table('routine_category')
+        ->insert([
+            "category_id" => $request->category_id,
+            "routine_id" => $request->routine_id
+        ]);
+
+        return response()->json($inserted);
+    }
 }
