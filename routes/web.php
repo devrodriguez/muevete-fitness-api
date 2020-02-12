@@ -1,5 +1,6 @@
 <?php
-
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 /*
 |--------------------------------------------------------------------------
 | Application Routes
@@ -16,6 +17,10 @@ $router->post('/auth/forgotten', 'AuthController@passwordForgotten');
 
 $router->get('/appkey', function() {
     return str_random(32);
+});
+
+$router->get('/hash/{pass}', function($pass) {
+    return Hash::make($pass);
 });
 
 $router->get('/trainers', 'TrainerController@index');
@@ -84,3 +89,7 @@ $router->get('/categories/{id}/routines', 'CategoryController@routinesByCategory
 
 //Available days
 $router->get('/availableDays', 'AvailableDayController@index');
+
+//Util
+$router->post('/uploadFile', 'UtilController@uploadFile');
+$router->get('/downloadFile', 'UtilController@downloadFile');

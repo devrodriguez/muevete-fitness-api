@@ -73,13 +73,21 @@ class AuthController extends Controller
     } 
 
     public function passwordForgotten(Request $request) {
-        $email = $request->email;
         $customer = Customer::where('email', $request->email)->first();
+        
+        if(!$customer) {
+            return response()->json([
+                'status' => 203,
+                'message' => 'User dosen\'t exist'
+            ]);
+        }
+            
+        $email = $request->email;
         $newPass = str_random(8);
         $customer->password = Hash::make($newPass);
         $customer->save();
         $data = ['pass' => $newPass];
-
+            
         $res = Mail::to($email, $customer->name)
         ->send(new PasswordForgotten($data));
 
