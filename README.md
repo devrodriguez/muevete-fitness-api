@@ -1,5 +1,8 @@
 # Artisan
 
+## Migrate
+php artisan migrate
+
 ## Create model with migration
 php artisan make:model [Model] --migration
 
